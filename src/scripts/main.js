@@ -5,6 +5,7 @@ import angular from 'angular';
 // angular modules
 import 'angular-ui-router';
 import './templates';
+//import './modules/home'
 
 /*import './controllers';
 import './services';

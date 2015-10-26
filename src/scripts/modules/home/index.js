@@ -1,16 +1,20 @@
 'use strict';
 
 import angular from 'angular';
-const bulk = require('bulk-require');
+//import controller from './home.controller'
 
-const homeModule = angular.module('app.home', []);
+function HomeController() {
 
-const controllers = bulk(__dirname, ['./**/!(*index|*.spec).js']);
+  // ViewModel
+  const vm = this;
 
-Object.keys(controllers).forEach((key) => {
-  let item = controllers[key];
+  vm.title = 'Title';
+  vm.hello = 'hello world';
 
-  controllersModule.controller(item.name, item.fn);
-});
+}
 
-export default controllersModule;
+const homeModule = angular.module('app.home', [])
+	.controller('Home', HomeController);
+
+
+export default homeModule;
