@@ -19,6 +19,7 @@ const requires = [
   'app.directives'*/
 ];
 
+
 // mount on window for testing
 window.app = angular.module('app', requires);
 

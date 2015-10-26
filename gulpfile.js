@@ -3,7 +3,9 @@
 var gulp = require('gulp');
 var templateCache = require('gulp-angular-templatecache');
 var browserify = require('gulp-browserify');
-
+var watch = require('gulp-watch');
+var runSequence = require('run-sequence');
+ 
 gulp.task('templateCache', function () {
   	return gulp.src('src/scripts/**/*.html')
     	.pipe(templateCache())
@@ -15,22 +17,16 @@ gulp.task('browserify', function() {
     gulp.src('src/scripts/main.js')
         .pipe(browserify({
         	transform: ['babelify'],
-          	//insertGlobals : true,
           	debug : !gulp.env.production
         }))
         .pipe(gulp.dest('./dist/scripts'))
 });
 
+gulp.task('build', function(done) {
+  runSequence([ 'templateCache' ],
+                'browserify', done);
+});
 
-/*
-
-gulp.task('move', function() {
-	
-});*/
-
-/*
-gulp.task('default', function(cb) {
-plugins.runSequence([ 'clean', 'lint', 'templatecache' ],
-                    [ 'bower:all', 'modernizr' ],
-                    'test:all', 'move:all', 'inject', 'run:server', 'watch', cb);
-});*/
+gulp.task('watch', function(){
+   gulp.watch('./client/scripts/**/*.js', ['build']);
+});
