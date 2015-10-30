@@ -5,16 +5,17 @@ var templateCache = require('gulp-angular-templatecache');
 var browserify = require('gulp-browserify');
 var watch = require('gulp-watch');
 var runSequence = require('run-sequence');
-
-//var browserSync = require('browser-sync');
-//var url = require('url');
+var url = require('url');
+var browserSync = require('browser-sync').create();
+var sass = require('gulp-sass');
  
 gulp.task('templateCache', function () {
   	return gulp.src('src/scripts/**/*.html')
     	.pipe(templateCache({
         standalone: true
       }))
-    	.pipe(gulp.dest('src/scripts'));
+    	.pipe(gulp.dest('src/scripts'))
+      .pipe(browserSync.stream());
 });
 
 gulp.task('browserify', function() {
@@ -25,54 +26,37 @@ gulp.task('browserify', function() {
           	debug : !gulp.env.production
         }))
         .pipe(gulp.dest('./dist/scripts'))
+        .pipe(browserSync.stream());
 });
 
 gulp.task('move:html', function(){
     return gulp.src('src/*.html')
-          .pipe(gulp.dest('dist'));
+          .pipe(gulp.dest('dist'))
+          .pipe(browserSync.stream());
 });
 
-gulp.task('build', function(done) {
-  runSequence([ 'templateCache' ],
-                ['browserify', 'move:html'], done);
+// Static Server + watching scss/html files
+gulp.task('serve', ['sass', 'browserify', 'templateCache', 'move:html'], function() {
+
+    browserSync.init({
+        server: "./dist"
+    });
+
+    gulp.watch("src/**/*.scss", ['sass']);
+    gulp.watch('src/scripts/**/*.html', ['templateCache']);
+    gulp.watch('src/*.html', ['move:html']);
+    gulp.watch('src/scripts/**/*.js', ['browserify']);
 });
 
-gulp.task('watch', function(){
-   gulp.watch('src/scripts/**/*.js', ['build']);
+// Compile sass into CSS & auto-inject into browsers
+gulp.task('sass', function() {
+    return gulp.src("src/**/*.scss")
+        .pipe(sass({outputStyle: 'compressed'}))
+        .pipe(gulp.dest('dist/css/'))
+        .pipe(browserSync.stream());
 });
 
-/*
-gulp.task('browserSync', function() {
-
-  var DEFAULT_FILE = 'index.html';
-  var ASSET_EXTENSIONS = ['js', 'css', 'png', 'jpg', 'jpeg', 'gif'];
-
-  browserSync.init({
-    server: {
-      baseDir: config.buildDir,
-      middleware: function(req, res, next) {
-        var fileHrefArray = url.parse(req.url).href.split('.');
-        var fileExtension = fileHrefArray[fileHrefArray.length - 1];
-
-        if ( ASSET_EXTENSIONS.indexOf(fileExtension) === -1 ) {
-          req.url = '/' + DEFAULT_FILE;
-        }
-
-        return next();
-      }
-    },
-    port: 3000,
-    ui: {
-      port: 3001
-    },
-    ghostMode: {
-      links: false
-    }
-  });
-
-});*/
 
 gulp.task('default', function(done){
-    runSequence([ 'build' ],
-                'watch', done);
+    runSequence('serve', done);
 });

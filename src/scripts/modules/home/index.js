@@ -10,7 +10,6 @@ function HomeController() {
 
   vm.title = 'Title';
   vm.hello = 'hello world';
-
 }
 
 const homeModule = angular.module('app.home', [])
