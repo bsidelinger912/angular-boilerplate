@@ -1,1 +1,1 @@
-angular.module("templates", []).run(["$templateCache", function($templateCache) {$templateCache.put("modules/home/home.html","<div>\n	<h1 id=\"home-header\">Home template</h1>\n	<p>\n		Lorem ipsum...\n	</p>\n</div>");}]);
+angular.module("templates", []).run(["$templateCache", function($templateCache) {$templateCache.put("modules/home/home.html","<div>\n	<h1 id=\"home-header\" ng-bind=\"home.title\" ng-click=\"home.click()\">Home template</h1>\n	<p ng-bind=\"home.hello\" example-directive></p>\n</div>");}]);

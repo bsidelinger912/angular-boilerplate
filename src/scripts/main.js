@@ -2,22 +2,20 @@
 
 import angular from 'angular';
 
-// angular modules
 import 'angular-ui-router';
 import './templates';
-//import './modules/home'
+//import './services';
+import './directives';
 
-/*import './controllers';
-import './services';
-import './directives';*/
+import './modules/home'
 
 // create and bootstrap application
 const requires = [
   'ui.router',
-  'templates'/*,
-  'app.controllers',
-  'app.services',
-  'app.directives'*/
+  'templates',
+  /*'app.services',*/
+  'app.directives',
+  'app.home'
 ];
 
 
